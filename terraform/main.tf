@@ -1,16 +1,4 @@
-variable "awsprops" {
-    type = map
-    default = {
-    region = "us-west-1"
-    vpc = "vpc-034fd7627fc5ed5a9"
-    ami = "ami-02541b8af977f6cdd"
-    itype = "t2.micro"
-    pri_subnet = "subnet-03c845de5979c01bc"
-    pub_subnet = "subnet-03c845de5979c01bc"
-    keyname = "lab"
-    sg_name="sg-052cfdb822a42e1c4"
-  }
-}
+
 
 provider "aws" {
   region = lookup(var.awsprops, "region")
