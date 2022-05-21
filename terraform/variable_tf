@@ -1,0 +1,15 @@
+variable "awsprops" {
+    type = map
+    default = {
+    region = "YOUR REGION"
+    vpc = "YOUR VPC ID"
+    ami = "YOUR AMI ID"
+    itype = "YOUR INSTANCE TYPE"
+    pri_subnet = "YOUR SUBNET ID"
+    pub_subnet = "YOUR SUBNET ID"
+    keyname = "YOUR ALREADY EXISTING KEY PAIR NAME"
+    sg_name="YOUR ALREDY EXISTING SECURITY GROUP ID"
+  }
+}
+variable "pri_key" {
+}
