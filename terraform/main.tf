@@ -51,7 +51,7 @@ resource "aws_instance" "worker2" {
 }
 
 ### Master Instance
-resource "aws_instance" "Master" {
+resource "aws_instance" "master" {
   ami = lookup(var.awsprops, "ami")
   instance_type = lookup(var.awsprops, "itype")
   subnet_id = lookup(var.awsprops, "pub_subnet") #FFXsubnet2
@@ -76,6 +76,7 @@ resource "aws_instance" "Master" {
 resource "aws_instance" "Bastion" {
   ami = lookup(var.awsprops, "ami")
   instance_type = lookup(var.awsprops, "itype")
+  iam_instance_profile = lookup(var.awsprops, "iam")
   subnet_id = lookup(var.awsprops, "pub_subnet") #FFXsubnet2
   associate_public_ip_address = "true"
   key_name = lookup(var.awsprops, "keyname")
@@ -89,6 +90,7 @@ resource "aws_instance" "Bastion" {
                  sudo yum update -y
                  sudo amazon-linux-extras enable ansible2
                  sudo yum install -y ansible
+                 sudo yum install -y git
                  echo '[Master]'| sudo tee -a /etc/ansible/hosts
                  echo "${aws_instance.master.private_ip}"| sudo tee -a /etc/ansible/hosts
                  echo '[workers]'| sudo tee -a /etc/ansible/hosts
@@ -102,6 +104,12 @@ resource "aws_instance" "Bastion" {
                  sudo rpm --import sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
                  sudo yum upgrade
                  sudo yum install jenkins -y
+                 sudo yum install maven -y
+                 aws s3 cp s3://saivalaxy1/jenkins.tar /var/lib/jenkins.tar
+                 rm /var/lib/jenkins -rf
+                 tar -xvzf /varlib/jenkins.tar /var/lib/jenkins
+                 chown -R jenkins /var/lib/jenkins
+                 chmod -R 755 /var/lib/jenkins
                  sudo systemctl start jenkins
                  cd /
                  git clone https://github.com/saikrissh9/devops.git
@@ -116,12 +124,17 @@ resource "aws_instance" "Bastion" {
   }
 }
 
-output "Instance_Pub_IPs" {
-  value = [aws_instance.Master.public_ip, aws_instance.worker1.public_ip, aws_instance.worker2.public_ip]
+output "K8s_Pub_IPs" {
+  value = [aws_instance.master.public_ip, aws_instance.worker1.public_ip, aws_instance.worker2.public_ip]
 
 }
 
-output "Instance_Pri_IPs" {
-  value = [aws_instance.Master.private_ip, aws_instance.worker1.private_ip, aws_instance.worker2.private_ip]
+output "k8s_Pri_IPs" {
+  value = [aws_instance.master.private_ip, aws_instance.worker1.private_ip, aws_instance.worker2.private_ip]
 }
 
+
+output "Bastion_Pub_IPs" {
+  value = [aws_instance.Bastion.public_ip]
+
+}

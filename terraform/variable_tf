@@ -4,6 +4,7 @@ variable "awsprops" {
     region = "YOUR REGION"
     vpc = "YOUR VPC ID"
     ami = "YOUR AMI ID"
+    iam = "YOUR EC2 IAM ROLE"
     itype = "YOUR INSTANCE TYPE"
     pri_subnet = "YOUR SUBNET ID"
     pub_subnet = "YOUR SUBNET ID"
