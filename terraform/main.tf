@@ -65,15 +65,33 @@ resource "aws_instance" "Master" {
                  sudo chown ec2-user /home/ec2-user/.ssh/id_rsa
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
                  sudo yum update -y
+                 EOF
+                 
+### Bastion Instance
+resource "aws_instance" "Bastion" {
+  ami = lookup(var.awsprops, "ami")
+  instance_type = lookup(var.awsprops, "itype")
+  subnet_id = lookup(var.awsprops, "pub_subnet") #FFXsubnet2
+  associate_public_ip_address = "true"
+  key_name = lookup(var.awsprops, "keyname")
+  vpc_security_group_ids = [lookup(var.awsprops, "sg_name")]
+  user_data = <<-EOF
+                #!/bin/bash
+                 sudo hostnamectl set-hostname Bastion
+                 sudo echo "${var.pri_key}" > /home/ec2-user/.ssh/id_rsa
+                 sudo chown ec2-user /home/ec2-user/.ssh/id_rsa
+                 sudo chmod 600 /home/ec2-user/.ssh/id_rsa
+                 sudo yum update -y
                  sudo amazon-linux-extras enable ansible2
                  sudo yum install -y ansible
                  echo '[Master]'| sudo tee -a /etc/ansible/hosts
-                 echo 'localhost'| sudo tee -a /etc/ansible/hosts
+                 echo "${aws_instance.master.private_ip}"| sudo tee -a /etc/ansible/hosts
                  echo '[workers]'| sudo tee -a /etc/ansible/hosts
                  echo "${aws_instance.worker1.private_ip}"| sudo tee -a /etc/ansible/hosts
                  echo "${aws_instance.worker2.private_ip}"| sudo tee -a /etc/ansible/hosts
                  echo "${aws_instance.worker1.private_ip} worker1"| sudo tee -a /etc/hosts
-                 echo "${aws_instance.worker2.private_ip} worker2"| sudo tee -a /etc/hosts                 
+                 echo "${aws_instance.worker2.private_ip} worker2"| sudo tee -a /etc/hosts
+                 echo "${aws_instance.master.private_ip} master"| sudo tee -a /etc/hosts                  
                  sudo yum install java-1.8.0 -y
                  sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
                  sudo rpm --import sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
