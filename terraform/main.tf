@@ -66,7 +66,12 @@ resource "aws_instance" "Master" {
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
                  sudo yum update -y
                  EOF
-                 
+  tags = {
+    Name ="Master"
+    Environment = "Test"
+    OS = "Amazon Linux 2"
+  }
+}                 
 ### Bastion Instance
 resource "aws_instance" "Bastion" {
   ami = lookup(var.awsprops, "ami")
@@ -105,7 +110,7 @@ resource "aws_instance" "Bastion" {
 
                  EOF
   tags = {
-    Name ="Master"
+    Name ="Bastion"
     Environment = "Test"
     OS = "Amazon Linux 2"
   }
