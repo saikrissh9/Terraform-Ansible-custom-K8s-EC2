@@ -13,7 +13,7 @@ resource "aws_instance" "worker1" {
   key_name = lookup(var.awsprops, "keyname")
   user_data = <<-EOF
                 #!/bin/bash
-                 sudo hostnamectl set-hostname Worker1
+                 #sudo hostnamectl set-hostname Worker1
                  sudo echo "${var.pri_key}" > /home/ec2-user/.ssh/id_rsa
                  sudo chown ec2-user /home/ec2-user/.ssh/id_rsa
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
@@ -37,7 +37,7 @@ resource "aws_instance" "worker2" {
   vpc_security_group_ids = [lookup(var.awsprops, "sg_name")]
   user_data = <<-EOF
                 #!/bin/bash
-                sudo hostnamectl set-hostname Worker2
+                 #sudo hostnamectl set-hostname Worker2
                  sudo echo "${var.pri_key}" > /home/ec2-user/.ssh/id_rsa
                  sudo chown ec2-user /home/ec2-user/.ssh/id_rsa
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
@@ -60,7 +60,7 @@ resource "aws_instance" "master" {
   vpc_security_group_ids = [lookup(var.awsprops, "sg_name")]
   user_data = <<-EOF
                 #!/bin/bash
-                 sudo hostnamectl set-hostname Master
+                 #sudo hostnamectl set-hostname master
                  sudo echo "${var.pri_key}" > /home/ec2-user/.ssh/id_rsa
                  sudo chown ec2-user /home/ec2-user/.ssh/id_rsa
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
@@ -91,7 +91,7 @@ resource "aws_instance" "Bastion" {
                  sudo amazon-linux-extras enable ansible2
                  sudo yum install -y ansible
                  sudo yum install -y git
-                 echo '[Master]'| sudo tee -a /etc/ansible/hosts
+                 echo '[master]'| sudo tee -a /etc/ansible/hosts
                  echo "${aws_instance.master.private_ip}"| sudo tee -a /etc/ansible/hosts
                  echo '[workers]'| sudo tee -a /etc/ansible/hosts
                  echo "${aws_instance.worker1.private_ip}"| sudo tee -a /etc/ansible/hosts
@@ -107,13 +107,11 @@ resource "aws_instance" "Bastion" {
                  sudo yum install maven -y
                  aws s3 cp s3://saivalaxy1/jenkins.tar /var/lib/jenkins.tar
                  rm /var/lib/jenkins -rf
-                 tar -xvzf /varlib/jenkins.tar /var/lib/jenkins
+                 tar -xvzf /var/lib/jenkins.tar -C /var/lib/
                  chown -R jenkins /var/lib/jenkins
-                 chmod -R 755 /var/lib/jenkins
-                 sudo systemctl start jenkins
                  cd /
                  git clone https://github.com/saikrissh9/devops.git
-                 cd /devops/ansible/
+                 cd /devops/Ansible/
                  ansible-playbook k8s_setup.yml
 
                  EOF
