@@ -65,6 +65,7 @@ resource "aws_instance" "master" {
                  sudo chown ec2-user /home/ec2-user/.ssh/id_rsa
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
                  sudo yum update -y
+                 sudo yum install git -y
                  EOF
   tags = {
     Name ="Master"
@@ -108,11 +109,11 @@ resource "aws_instance" "Bastion" {
                  aws s3 cp s3://saivalaxy1/jenkins.tar /var/lib/jenkins.tar
                  rm /var/lib/jenkins -rf
                  tar -xvzf /var/lib/jenkins.tar -C /var/lib/
-                 chown -R jenkins /var/lib/jenkins
+                 sudo systemctl start jenkins
                  cd /
                  git clone https://github.com/saikrissh9/devops.git
                  cd /devops/Ansible/
-                 ansible-playbook k8s_setup.yml
+                 sudo -u ec2-user ansible-playbook k8s_setup.yml
 
                  EOF
   tags = {
