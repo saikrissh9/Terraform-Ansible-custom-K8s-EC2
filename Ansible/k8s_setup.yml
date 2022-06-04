@@ -11,7 +11,7 @@
           cd /
           git clone https://github.com/saikrissh9/capstone.git
           cd /capstone/k8s/metrics-server
-          kubectl apply -f .
+          #kubectl apply -f .
 
 - hosts: workers
   gather_facts: no

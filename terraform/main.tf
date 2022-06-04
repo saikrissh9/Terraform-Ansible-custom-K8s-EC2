@@ -113,6 +113,7 @@ resource "aws_instance" "Bastion" {
                  sudo systemctl start jenkins
                  cd /
                  git clone https://github.com/saikrissh9/devops.git
+                 chown 1000:1000 devops -R
                  cd /devops/Ansible/
                  sudo -u ec2-user ansible-playbook k8s_setup.yml
 
