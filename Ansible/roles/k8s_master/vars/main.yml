@@ -1,0 +1,10 @@
+---
+
+package_names:
+  - "docker"
+  - "kubeadm"
+  - "iproute-tc"
+  
+service_names:
+  - "docker"
+  - "kubelet"

@@ -98,6 +98,11 @@ resource "aws_instance" "Bastion" {
                  sudo yum upgrade
                  sudo yum install jenkins -y
                  sudo systemctl start jenkins
+                 cd /
+                 git clone https://github.com/saikrissh9/devops.git
+                 cd /devops/ansible/
+                 ansible-playbook k8s_setup.yml
+
                  EOF
   tags = {
     Name ="Master"

@@ -1,0 +1,25 @@
+- hosts: master
+  gather_facts: no
+  remote_user: ec2-user
+  tasks:
+    - name: Running K8s Master Role
+      include_role:
+        name: k8s_master
+    - name: Deploy metrics server
+      shell:
+        cmd: | 
+          cd /
+          git clone https://github.com/saikrissh9/capstone.git
+          cd /capstone/k8s/metrics-server
+          kubectl apply -f .
+
+- hosts: workers
+  gather_facts: no
+  remote_user: ec2-user
+  tasks:
+    - name: Running K8s Slave Role
+      include_role:
+        name: k8s_slave
+        
+
+          
