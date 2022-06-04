@@ -66,6 +66,7 @@ resource "aws_instance" "master" {
                  sudo chmod 600 /home/ec2-user/.ssh/id_rsa
                  sudo yum update -y
                  sudo yum install git -y
+                 echo '1'  | sudo tee -a /proc/sys/net/bridge/bridge-nf-call-iptables
                  EOF
   tags = {
     Name ="Master"
